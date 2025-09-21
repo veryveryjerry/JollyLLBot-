@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - JollyLLBot{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-chart-line me-2"></i>Document Analysis Results
+                </h2>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Analyze Another Document
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if analysis.error %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-danger">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-exclamation-circle me-2"></i>Analysis Error
+                    </h5>
+                    <p class="mb-0">{{ analysis.error }}</p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Document Info -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file me-2"></i>Document Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Filename:</strong> {{ filename }}
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Word Count:</strong> {{ analysis.word_count | default('N/A') }}
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Document Type:</strong> {{ analysis.analysis.document_type | default('Unknown') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-alt me-2"></i>Document Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ analysis.analysis.summary | default('No summary available') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Points -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-key me-2"></i>Key Points
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis.analysis.key_points %}
+                            <ul class="list-group list-group-flush">
+                                {% for point in analysis.analysis.key_points %}
+                                    <li class="list-group-item border-0 px-0">
+                                        <i class="fas fa-chevron-right text-success me-2"></i>{{ point }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No key points identified</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risks & Concerns -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Risks & Concerns
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis.analysis.risks_concerns %}
+                            <ul class="list-group list-group-flush">
+                                {% for risk in analysis.analysis.risks_concerns %}
+                                    <li class="list-group-item border-0 px-0">
+                                        <i class="fas fa-exclamation-circle text-warning me-2"></i>{{ risk }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted">No significant risks identified</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Recommendations
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis.analysis.recommendations %}
+                            <div class="row">
+                                {% for recommendation in analysis.analysis.recommendations %}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="d-flex">
+                                            <i class="fas fa-check-circle text-info me-2 mt-1"></i>
+                                            <span>{{ recommendation }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No specific recommendations available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Analysis -->
+        {% if analysis.analysis.full_analysis %}
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-scroll me-2"></i>Detailed Analysis
+                            </h5>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#fullAnalysis">
+                                <i class="fas fa-chevron-down me-1"></i>Toggle
+                            </button>
+                        </div>
+                    </div>
+                    <div class="collapse" id="fullAnalysis">
+                        <div class="card-body">
+                            <pre class="text-wrap">{{ analysis.analysis.full_analysis }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Analyze Another Document
+                    </a>
+                    <button class="btn btn-outline-success" onclick="downloadResults()">
+                        <i class="fas fa-download me-2"></i>Download Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Disclaimer -->
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="alert alert-light border">
+                <h6 class="alert-heading">
+                    <i class="fas fa-shield-alt me-2"></i>Legal Disclaimer
+                </h6>
+                <p class="mb-0 small text-muted">
+                    This automated analysis is provided for informational purposes only and should not be 
+                    considered as legal advice. The results may not be complete or accurate. Always consult 
+                    with a qualified legal professional for important legal matters.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function downloadResults() {
+    // Create a simple text version of the results for download
+    const results = {
+        filename: "{{ filename }}",
+        analysis: {{ analysis | tojson | safe }}
+    };
+    
+    const blob = new Blob([JSON.stringify(results, null, 2)], {
+        type: 'application/json'
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'legal_analysis_results.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

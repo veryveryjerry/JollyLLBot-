@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5 mb-5">
+    <div class="container text-center">
+        <h1 class="display-4 mb-3">
+            <i class="fas fa-balance-scale me-3"></i>JollyLLBot
+        </h1>
+        <p class="lead mb-4">AI-Powered Legal Document Analysis Assistant</p>
+        <p class="mb-0">Upload your legal documents for instant AI analysis and insights</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-light">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-upload me-2"></i>Upload Document for Analysis
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data" id="uploadForm">
+                        <div class="mb-4">
+                            <label for="file" class="form-label">
+                                <i class="fas fa-file me-2"></i>Select Legal Document
+                            </label>
+                            <input type="file" class="form-control form-control-lg" id="file" name="file" 
+                                   accept=".pdf,.docx,.txt" required>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Supported formats: PDF, DOCX, TXT (Max 10MB)
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn">
+                                <i class="fas fa-brain me-2"></i>Analyze Document
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5" id="features">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Document Analysis</h5>
+                    <p class="card-text">Extract and analyze text from PDF, DOCX, and TXT files</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-brain fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">AI Insights</h5>
+                    <p class="card-text">Get AI-powered legal insights and key point extraction</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">Risk Assessment</h5>
+                    <p class="card-text">Identify potential legal risks and concerning clauses</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fab fa-whatsapp fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">WhatsApp Bot</h5>
+                    <p class="card-text">Access analysis features through WhatsApp messaging</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="alert alert-info">
+                <h5 class="alert-heading">
+                    <i class="fas fa-info-circle me-2"></i>How It Works
+                </h5>
+                <ol class="mb-0">
+                    <li><strong>Upload:</strong> Select and upload your legal document</li>
+                    <li><strong>Extract:</strong> Our system extracts text from your document</li>
+                    <li><strong>Analyze:</strong> AI analyzes the content for legal insights</li>
+                    <li><strong>Review:</strong> Get detailed analysis with risks and recommendations</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="alert alert-warning">
+                <h6 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Important Disclaimer
+                </h6>
+                <p class="mb-0 small">
+                    This tool provides automated analysis for informational purposes only. 
+                    It is not a substitute for professional legal advice. Always consult with 
+                    a qualified attorney for legal matters.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loadingModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5>Analyzing Document...</h5>
+                <p class="text-muted">This may take a few moments</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('analyzeBtn');
+    const modal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+    modal.show();
+});
+</script>
+{% endblock %}
