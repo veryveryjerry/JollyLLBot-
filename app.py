@@ -120,6 +120,39 @@ def whatsapp_webhook():
         return "OK", 200
 
 
+@app.route('/chat')
+def chat_interface():
+    """Chat interface prototype"""
+    return render_template('chat.html')
+
+
+@app.route('/api/chat', methods=['POST'])
+def chat_api():
+    """API endpoint for chat messages"""
+    try:
+        data = request.get_json()
+        message = data.get('message', '').strip().lower()
+        
+        if not message:
+            return jsonify({'error': 'No message provided'}), 400
+        
+        # Process message using WhatsApp bot logic
+        if message in ['hello', 'hi', 'start', 'help']:
+            response = whatsapp_bot._get_welcome_message()
+        elif 'analyze' in message or 'document' in message:
+            response = whatsapp_bot._get_document_instructions()
+        elif 'status' in message:
+            response = whatsapp_bot._get_status_message()
+        else:
+            response = whatsapp_bot._get_default_message()
+        
+        return jsonify({'response': response})
+        
+    except Exception as e:
+        logger.error(f"Chat API error: {str(e)}")
+        return jsonify({'error': 'Sorry, I encountered an error. Please try again later.'}), 500
+
+
 @app.route('/health')
 def health_check():
     """Health check endpoint"""
